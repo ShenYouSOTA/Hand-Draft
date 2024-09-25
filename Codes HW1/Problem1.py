@@ -1,8 +1,5 @@
-raw_data: str = input("")
-lines = raw_data.splitlines()
-basic_info = lines[0].split()
-raw_series = lines[1].split()
-
+basic_info = input("").split()
+raw_series = input("").split()
 """
 n: The length of the sequence.
 m: The number of operations. 
@@ -15,7 +12,8 @@ series: list = [int(num) for num in raw_series]
 
 
 def update(factor: str) -> None:
-    factor = factor.split()
+    factor: list = factor.split()
+    print(factor)
     k = int(factor[1])
     x = int(factor[2])
     y = int(factor[3])
@@ -25,13 +23,13 @@ def update(factor: str) -> None:
 
 
 def sum_sequence() -> None:
-    total = sum(series)
-    print(total)
+    summation = sum(series)
+    print(summation)
 
 
 def distinct_value() -> None:
     value = 0
-    distinct_set = set()
+    distinct_set = []
     for i in range(n):
         tempo = series[i]
         if tempo in distinct_set:
@@ -39,19 +37,24 @@ def distinct_value() -> None:
             if tempo in distinct_set:
                 continue
             else:
-                distinct_set.add(tempo)
-                value += tempo
+                distinct_set.append(tempo)
+                value += 1
         else:
-            distinct_set.add(tempo)
-            value += tempo
+            distinct_set.append(tempo)
+            value += 1
     print(value)
 
 
-for j in range(2, n):
-    temp = lines[j]
-    if temp == "2":
+while True:
+    command = input("")
+    if command == "2":
         sum_sequence()
-    if temp == "3":
+        m -= 1
+    if command == "3":
         distinct_value()
+        m -= 1
     else:
-        update(temp)
+        update(command)
+        m -= 1
+    if m == 0:
+        break
