@@ -9,70 +9,68 @@ P: The divisor in modulo operation.
 n, m, P = int(basic_info[0]), int(basic_info[1]), int(basic_info[2])
 series: list = [int(num) for num in raw_series]
 summation = sum(series)
-distinct_set = set()
+distinct_value = 0
+distinct_numbers = {}
 for i in series:
-    distinct_set.add(i)
-    if series.count(i) > 1:
-        distinct_set.add(-i)
-distinct_value = len(distinct_set)
-
-
-def detect_withdraw(num: int) -> None:
-    global distinct_set
-    if num == 0:
-        if series.count(num) == 0:
-            distinct_set.remove(num)
+    i = abs(i)
+    if i in distinct_numbers:
+        if i == 0:
+            continue
+        distinct_numbers[i] += 1
     else:
-        a = series.count(num)
-        b = series.count(-num)
-        if a + b < 2:
-            if a == 0:
-                distinct_set.remove(num)
-            else:
-                distinct_set.remove(-num)
+        distinct_numbers[i] = 1
 
 
-def detect_entry(num: int) -> None:
-    global distinct_set
-    a = series.count(num)
-    b = series.count(-num)
-    if (a+b) < 2 and b == 0:
-        num = -num
-    distinct_set.add(num)
+for num in distinct_numbers:
+    if distinct_numbers[num] >= 2:
+        distinct_value += 2
+    else:
+        distinct_value += 1  # distinct_numbers[num]
 
 
 def update(factor: str) -> None:
-    global distinct_value, summation
+    global summation, distinct_value
     factor = factor.split()
     k = int(factor[1])
     x = int(factor[2])
     y = int(factor[3])
     c = int(factor[4])
-    temp = x ** 2 + k * y + 5 * x
-    current = (temp % P) * c
-
-    previous = series.pop(k-1)
-    detect_withdraw(previous)
-    detect_entry(current)
-    series.insert(k - 1, current)
+    previous = series[k - 1]
+    current = (x ** 2 + k * y + 5 * x) % P * c
+    series[k - 1] = current
     summation = summation - previous + current
-    distinct_value = len(distinct_set)
-
-
-def sum_sequence() -> None:
-    print(summation)
-
-
-def count_distinct() -> None:
-    print(distinct_value)
+    previous = abs(previous)
+    current = abs(current)
+    if previous == 0:
+        if distinct_numbers[previous] >= 2:
+            distinct_numbers[previous] -= 1
+        else:
+            distinct_value -= 1
+            del distinct_numbers[previous]
+    else:
+        if distinct_numbers[previous] == 1:
+            del distinct_numbers[previous]
+            distinct_value -= 1
+        elif distinct_numbers[previous] == 2:
+            distinct_numbers[previous] -= 1
+            distinct_value -= 1
+        else:
+            distinct_numbers[previous] -= 1
+    if current in distinct_numbers:
+        if current != 0 and distinct_numbers[current] < 2:
+            distinct_value += 1
+        distinct_numbers[current] += 1
+    else:
+        distinct_numbers[current] = 1
+        distinct_value += 1
 
 
 while 0 < m:
-    command = input("")
-    if command == "2":
-        sum_sequence()
-    elif command == "3":
-        count_distinct()
+    line = input("")
+    if line == "2":
+        print(summation)
+    elif line == "3":
+        print(distinct_value)
     else:
-        update(command)
+        update(line)
     m -= 1
